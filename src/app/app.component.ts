@@ -31,7 +31,10 @@ class Column implements DynColumn {
     <h1>Hello dynamic table</h1>
     <dyntable 
         [columns]="columns" 
-        [rows]="rows"></dyntable>
+        [rows]="rows"  
+        [more]="more"
+        [loading]="loading"
+        (load)="onLoadMore($event)"></dyntable>
   `,
 })
 export class AppComponent  {
@@ -53,7 +56,7 @@ export class AppComponent  {
 
     private load() {
         this.loading = true;
-        this.data.get().subscribe((data: any)=>{
+        this.data.get(this.rows.length).subscribe((data: any)=>{
             this.more = this.rows.length < data.length;
             this.rows = data;
             this.loading = false;

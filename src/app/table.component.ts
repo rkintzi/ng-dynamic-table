@@ -23,10 +23,21 @@ export interface Column {
                 <td *ngFor="let c of columns">{{ c.get(r) }}</td>
             </tr>
         </tbody>
+        <tfoot *ngIf="more">
+            <tr>
+                <td [attr.colspan]="columns?.length">
+                    <a href="#" *ngIf="!loading" (click)="load.emit()">Load more</a>
+                    <span *ngIf="loading">Loading ...</span>
+                </td>
+            </tr>
+        </tfoot>
     </table>
   `
 })
 export class DynamicTableComponent  { 
     @Input() columns: Column[];
     @Input() rows: any[];
+    @Input() more: boolean;
+    @Input() loading: boolean;
+    @Output() load = new EventEmitter<void>();
 }
