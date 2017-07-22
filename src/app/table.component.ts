@@ -1,11 +1,60 @@
 
-import { Component, Input, EventEmitter, Output, SimpleChanges } from '@angular/core';
+import { 
+    Component, 
+    ComponentFactoryResolver,
+    Directive,
+    EventEmitter, 
+    Host,
+    Input, 
+    Output, 
+    SimpleChanges,
+    TemplateRef,
+    Type,
+    ViewContainerRef,
+} from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
+
+export interface CellComponent {
+    data: any;
+};
 
 export interface Column {
     title: string;
     get(d: any): string;
+    component?: Type<any>;
+}
+
+@Directive({
+    selector: '[cellData]'
+})
+export class TableCellData {
+    @Input('cellData') data: any
+}
+
+@Directive({
+    selector: '[cell]',
+})
+export class TableCell {
+    @Input('cell') set column(c: Column) {
+        if (c.component) {
+            let componentFactory = this.componentFactoryResolver
+                .resolveComponentFactory(c.component);
+            this.viewContainer.clear();
+            let componentRef = this.viewContainer.createComponent(componentFactory);
+            (<CellComponent>componentRef.instance).data = this.cellData.data;
+        } else {
+            this.viewContainer.clear();
+            this.viewContainer.createEmbeddedView(this.templateRef);
+        }
+    }
+    constructor(
+        private templateRef: TemplateRef<any>,
+        private viewContainer: ViewContainerRef,
+        private componentFactoryResolver: ComponentFactoryResolver,
+        @Host() private cellData: TableCellData,
+    ) { }
+    
 }
 
 @Component({
@@ -20,7 +69,7 @@ export interface Column {
         </thead>
         <tbody>
             <tr *ngFor="let r of rows">
-                <td *ngFor="let c of columns">{{ c.get(r) }}</td>
+                <td *ngFor="let c of columns" [cellData]="c.get(r)"><ng-container *cell="c">{{ c.get(r) }}</ng-container></td>
             </tr>
         </tbody>
         <tfoot *ngIf="more">
@@ -32,7 +81,7 @@ export interface Column {
             </tr>
         </tfoot>
     </table>
-  `
+  `,
 })
 export class DynamicTableComponent  { 
     @Input() columns: Column[];

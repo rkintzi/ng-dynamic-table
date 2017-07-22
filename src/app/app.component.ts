@@ -1,11 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, Input, Type } from '@angular/core';
 import { Column as DynColumn } from './table.component';
 import { DataService } from './data.service';
 
 import { Subject } from 'rxjs/Subject';
 
 class Column implements DynColumn {
-    constructor(public title: string, public get: (d: any) => string) {}
+    constructor(
+        public title: string, 
+        public get: (d: any) => string,
+        public component?: Type<any>,
+    ) {}
+}
+@Component({
+    selector: 'phone-no',
+    template: '<a [attr.href]="\'tel:\'+data">{{data}}',
+})
+export class PhoneNoComponent {
+    @Input() data: string;
 }
 
 @Component({
@@ -40,7 +51,7 @@ class Column implements DynColumn {
 export class AppComponent  {
     columns = [
         new Column("Full name", (d: any) => d.name),
-        new Column("Phone no.", (d: any) => d.phone),
+        new Column("Phone no.", (d: any) => d.phone, PhoneNoComponent),
     ];
     rows: any[] = [];
     more = true;
