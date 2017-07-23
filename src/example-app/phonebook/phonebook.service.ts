@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 @Injectable()
-export class DataService {
+export class PhoneBookService {
     get(next?: number): Observable<any> {
         let s = new Subject<any>();
         window.setTimeout(() => {

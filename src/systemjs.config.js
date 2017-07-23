@@ -11,7 +11,8 @@
     // map tells the System loader where to look for things
     map: {
       // our app is within the app folder
-      'app': 'app',
+      'example-app': 'example-app',
+      'dynamic-table': 'dynamic-table',
 
       // angular bundles
       '@angular/core': 'npm:@angular/core/bundles/core.umd.js',
@@ -29,13 +30,22 @@
     },
     // packages tells the System loader how to load when no filename and/or no extension
     packages: {
-      app: {
+      'example-app': {
         defaultExtension: 'js',
         meta: {
           './*.js': {
             loader: 'systemjs-angular-loader.js'
           }
         }
+      },
+      'dynamic-table': {
+        defaultExtension: 'js',
+        meta: {
+          './*.js': {
+            loader: 'systemjs-angular-loader.js'
+          },
+        },
+        main: 'index.js'
       },
       rxjs: {
         defaultExtension: 'js'
